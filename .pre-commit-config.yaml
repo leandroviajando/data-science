@@ -1,0 +1,53 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+        exclude: notebooks
+      - id: check-ast
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: detect-private-key
+      - id: check-executables-have-shebangs
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.9.0
+    hooks:
+    - id: shellcheck
+      args: ["--severity=warning"]
+  - repo: local
+    hooks:
+      - id: install
+        name: install
+        entry: make
+        args: [install]
+        language: system
+        pass_filenames: false
+      - id: format
+        name: format
+        entry: make
+        args: [format]
+        language: system
+        pass_filenames: false
+      - id: lint
+        name: lint
+        entry: make
+        args: [lint]
+        language: system
+        pass_filenames: false
+      - id: scan
+        name: scan
+        entry: make
+        args: [scan]
+        language: system
+        pass_filenames: false
+      - id: test
+        name: test
+        entry: make
+        args: [test]
+        language: system
+        pass_filenames: false
