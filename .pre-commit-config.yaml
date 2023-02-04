@@ -33,21 +33,3 @@ repos:
         args: [format]
         language: system
         pass_filenames: false
-      - id: lint
-        name: lint
-        entry: make
-        args: [lint]
-        language: system
-        pass_filenames: false
-      - id: scan
-        name: scan
-        entry: make
-        args: [scan]
-        language: system
-        pass_filenames: false
-      - id: test
-        name: test
-        entry: make
-        args: [test]
-        language: system
-        pass_filenames: false
