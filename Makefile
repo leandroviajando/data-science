@@ -20,7 +20,12 @@ define install
 
 	if ! poetry lock --check 2>/dev/null; then poetry lock --no-update; fi
 
-	poetry install
+	if [ -z $(GROUPS) ]; then \
+		poetry install; \
+	else \
+		printf "\nGROUPS=${GROUPS}\n\n"; \
+		poetry install --sync --with $(GROUPS); \
+	fi
 
 	poetry run pre-commit install
 	poetry run pre-commit autoupdate
@@ -29,7 +34,7 @@ endef
 .venv:
 	$(call install)
 
-# make install: @ Install dependencies
+# make install [GROUPS=huggingface,tf,torch: @ Install dependencies (specify optional GROUPS to be installed)
 install:
 	$(call install)
 

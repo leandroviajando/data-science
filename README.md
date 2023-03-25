@@ -16,6 +16,7 @@ git lfs track "*.zip"
 - [Deep Learning](https://www.deeplearningbook.org/)
 - [Forecasting](https://otexts.com/fpp3/)
 - [Mathematics for Machine Learning](https://mml-book.github.io/)
+- [Speech and Language Processing](https://web.stanford.edu/~jurafsky/slp3/)
 
 ## Resources
 
