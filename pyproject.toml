@@ -29,14 +29,20 @@ optional = true
 
 [tool.poetry.group.huggingface.dependencies]
 datasets = "^2.13.1"
-torch = "^2.0.1"
 transformers = "^4.30.2"
+torch = "^2.0.1"
 
 [tool.poetry.group.tf]
 optional = true
 
 [tool.poetry.group.tf.dependencies]
 tensorflow = "^2.12.0"
+
+[tool.poetry.group.torch]
+optional = true
+
+[tool.poetry.group.torch.dependencies]
+torch = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.4"
