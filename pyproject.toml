@@ -20,7 +20,10 @@ namespace_packages = "True"
 exclude_dirs = [".venv", "tests", "*/test_*.py"]
 
 [tool.poetry.dependencies]
+matplotlib = "^3.7.1"
+numpy = "^1.23"
 python = ">=3.10,<3.11"
+tensorflow = "^2.12.0"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.4"
