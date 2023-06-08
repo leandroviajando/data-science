@@ -1,5 +1,16 @@
 # Deep Learning - AI
 
+```bash
+curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.python.sh | bash
+pip install git-lfs
+
+git init
+git lfs install
+
+git lfs track "*.pdf"
+git lfs track "*.zip"
+```
+
 ## Books
 
 - [Deep Learning](https://www.deeplearningbook.org/)
