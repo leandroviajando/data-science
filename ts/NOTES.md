@@ -232,3 +232,461 @@ model.fit(dataset, epochs=500)
 ```
 
 Note the loss used here is the [Huber loss](https://en.wikipedia.org/wiki/Huber_loss).
+
+# [Practical Time Series Analysis](https://www.coursera.org/learn/practical-time-series-analysis)
+
+## R
+
+```bash
+sudo apt-get install r-base
+```
+
+## Basic Statistics
+
+### Descriptive Statistics
+
+#### Numerical descriptions
+
+```R
+data <- c(35, 8, 10, 23, 42)  # concatenation operator
+summary(data)
+mean(data)
+sd(data)
+```
+
+#### Graphical descriptions
+
+Notebooks attached.
+
+### Inferential Statistics
+
+#### OLS / Linear Regression
+
+The response variable $Y_i$ depends on the explanatory variable $x_i$ in a linear way:
+
+$$
+Y_i = \beta_0 + \beta_1 x_i + \epsilon_i
+$$
+
+Assumptions:
+
+- The errors / **residuals** are normally distributed and, on average, zero. Assess normality with QQ Plots:
+
+```R
+qqnorm(c02.residuals)
+```
+
+- The errors all have the same variance (they are **homoskedastic**).
+- The errors are unrelated to each other (they are independent across observations).
+
+OLS: Minimise least squares error $\sum{(\text{Observed} - \text{Predicted})^2}$.
+
+```R
+x <- c(1, 2, 3, 4)
+y <- c(5, 7, 12, 13)
+( m <- lm(y ~ x) )
+```
+
+The sum of the residuals in a simple linear regression model is 0.
+
+The sum of the fitted values is equal to the sum of the observed values. Which is why the sum of the residuals is 0.
+
+#### T-tests
+
+```R
+t.test(data1, data2, paired=TRUE, alternative="two.sided")
+```
+
+Null hypothesis $H_0$: Mean response is the same for both, i.e. $\mu_1 - \mu_2 = 0$
+
+$$
+\alpha \equiv P(\text{Type I Error}) = 0.05
+$$
+
+$$
+t = \frac{\bar{d} - 0}{s_d / \sqrt{n}}
+$$
+
+Confidence Error: Estimate $\plusmn$ Table Value $\times$ (Estimated) Standard Error
+
+$$
+\bar{d} \plusmn t_{\frac{\alpha}{2}} \times \frac{s}{\sqrt{n}}
+$$
+
+The **standard error** is the standard deviation of the standard deviation of a sampling distribution.
+
+#### Covariance
+
+$$
+Cov[X, Y] = E[(X - \mu_X)(Y - \mu_Y)]
+$$
+
+$$
+cov = \frac{1}{n-1} \sum{(x_i - \bar{x})(y_i - \bar{y})}
+$$
+
+#### Correlation
+
+$$
+\rho(X, Y) = E[(\frac{X - \mu_X}{\sigma_X})(\frac{Y - \mu_Y}{\sigma_Y})]
+$$
+
+$$
+r = \hat{\rho} = \frac{1}{n-1} \sum{(\frac{x_i - \bar{x}}{s_X})(\frac{y_i - \bar{y}}{s_Y})}
+$$
+
+$$
+SSX = \sum{(x_i - \bar{x})^2} = \sum{x_i^2} - \frac{1}{n} \sum{x_i} \sum{x_i}
+$$
+
+$$
+SSY = \sum{(y_i - \bar{y})^2} = \sum{y_i^2} - \frac{1}{n} \sum{y_i} \sum{y_i}
+$$
+
+$$
+SSXY = \sum{(x_i - \bar{x})(y_i - \bar{y})} = \sum{x_i y_i} - \frac{1}{n} \sum{x_i} \sum{y_i}
+$$
+
+$$
+\frac{1}{n-1} \sum{(\frac{x_i - \bar{x}}{s_X})(\frac{y_i - \bar{y}}{s_Y})} = \frac{1}{n-1} \sum{(\frac{x_i - \bar{x}}{\sqrt{\frac{SSX}{n-1}}}) (\frac{y_i - \bar{y}}{\sqrt{\frac{SSY}{n-1}}})}
+$$
+
+$$
+\begin{split}
+r & = \bar{\rho} = \sum{(\frac{x_i - \bar{x}}{\sqrt{SSX}}) (\frac{y_i - \bar{y}}{\sqrt{SSY}})} \\
+ & = \frac{1}{\sqrt{SSX SSY}} \sum{(x_i - \bar{x}) (y_i - \bar{y})} \\
+ & = \frac{SSXY}{\sqrt{SSX} \sqrt{SSY}}
+\end{split}
+$$
+
+## Visualisation and Modelling of Time Series
+
+### (Weak) Stationarity
+
+- No systematic change in the mean, i.e. no trend
+- No systematic change in variance
+- Only *periodic* variations
+
+For non-stationary time series, we will do some transformations to get stationary time series.
+
+### Autocovariance Function
+
+A random variable maps from a sample space S to the real numbers, $X: S \rarr \R$.
+
+Covariance is the linear dependence between two random variables, $Cov(X, Y) = E[(X - \mu_X) (Y - \mu_Y)] = Cov(Y, X)$.
+
+A collection of random variables $X_1, X_2, X_3, ...$ is a stochastic process where $X_t \sim dist(\mu_t, \sigma_t^2)$: Unlike a deterministic process, there is some randomness at every time step, and you can never be sure exactly where you are.
+
+A time series is a realisation of a stochastic process.
+
+$$
+\gamma(s, t) = Cov(X_s, X_t) = E[(X_s - \mu_s) (X_t - \mu_t)]
+$$
+
+$$
+\gamma(t, t) = Cov(X_t, X_t) = E[(X_t - \mu_t)^2] = Var(X_t) = \sigma_t^2
+$$
+
+Thus, the autocovariance function
+
+$$
+\gamma_k = \gamma(t, t+k) \approx c_k
+$$
+
+Regardless of the value of $t$, the time difference $k$ is important for autocovariance because the assumption is that the time series is *stationary*, i.e. there is no trend.
+
+### Autocovariance Coefficients
+
+As above, assume weak stationarity.
+
+Thus, $c_k$ is an estimation of $\gamma_k$.
+
+$$
+c_k = \frac{\sum_{t=1}^{N-k}{(x_t - \bar{x})(x_{t+k} - \bar{x})}}{N}
+$$
+
+Autocovariance coefficients can be calculated at different lags $\gamma_k = Cov(X_t, X_{t+k})$ with the `acf()` R routine.
+
+### Autocorrelation Function
+
+As above, assume weak stationarity.
+
+The autocorrelation coefficient between $X_t$ and $X_{t+k}$ is defined to be
+
+$$
+-1 \leq \rho_k = \frac{\gamma_k}{\gamma_0} \leq 1
+$$
+
+Thus, estimation of the autocorrelation coefficient at lag $k$
+
+$$
+r_k = \frac{c_k}{c_0}
+$$
+
+### Random Walks
+
+$$
+X_t = X_{t-1} + Z_t, Z_t \sim Normal(\mu, \sigma^2)
+$$
+
+where $Z_t$ is the white noise (residual).
+
+$$
+X_0 = 0, X_1 = Z_1, X_2 = Z_1 + Z_2, X_t = \sum_{i=1}^t{Z_i}
+$$
+
+$$
+E[X_t] = E[\sum_{i=1}^t{Z_i}] = \sum_{i=1}^t{E[Z_i]} = \mu t
+$$
+
+$$
+Var[X_t] = Var[\sum_{i=1}^t{Z_i}] = \sum_{i=1}^t{Var[Z_i]} = \sigma^2 t
+$$
+
+**Removing the trend from a random walk:** Given $X_t = X_{t-1} + Z_t$, $X_t - X_{t-1} = Z_t$. Define the difference as $\nabla X_t = X_t - X_{t-1}$ (`diff()` in R). $\nabla X_t$ is a purely random process that is stationary.
+
+### Moving Averages
+
+A moving averages process of order $q$ can be defined as $MA(q)$:
+
+$$
+X_t = Z_t + \theta_1 Z_{t-1} + \theta_2 Z_{t-2} + ... + \theta_q Z_{t-q}
+$$
+
+$$
+Z_i \text{ i.i.d.}, Z_i \sim Normal(\mu, \sigma^2)
+$$
+
+The current value of the process is a linear combination of the noises from current and past time steps.
+
+Autocorrelation function of the process, i.e. ACF of MA(q), cuts off and becomes zero at the order of the process, i.e. at lag q.
+
+## Stationarity
+
+A stochastic process is a family of random variables structured with a time index, denoted $X_t$ for discrete processes (e.g. daily high temperatures) and $X(t)$ for continuous processes (e.g. Brownian motion of a particle).
+
+| $X_1$ | $X_2$ | $X_3$ | ... | $X_N$ |
+| --- | --- | --- | --- | --- |
+| $E[X_1] = \mu_1$ | $E[X_2] = \mu_2$ | $E[X_3] = \mu_3$ |  | $E[X_N] = \mu_N$ |
+| $Var[X_1] = \sigma_1^2$ | $Var[X_2] = \sigma_2^2$ | $Var[X_3] = \sigma_3^2$ |  | $Var[X_N] = \sigma_N^2$ |
+
+Therefore, can define a
+
+- mean function: $\mu(t) \equiv \mu_t \equiv E[X(t)]$
+- variance function: $\sigma^2(t) \equiv \sigma_t^2 \equiv Var[X(t)]$
+
+Estimation: How can infer the properties of a stochastic process from a single realisation?
+
+**Strict Stationarity:** A process is strictly stationary if the joint distribution of $X(t_1), X(t_2), ..., X(t_k)$ is the same as the joint distribution of $X(t_1 + \tau), X(t_2 + \tau), ..., X(t_k + \tau)$.
+
+Then, the joint distribution depends only on the lag spacing. Therefore, the autocovariance function is defined as:
+
+$$
+\gamma(t_1, t_2) = \gamma(t_2 - t_1) = \gamma(\tau)
+$$
+
+**Weak Stationarity:** A process is weakly stationary if the mean function $\mu(t) = \mu$ and the ACF $\gamma(t_1, t_2) = \gamma(t_2 - t_1) = \gamma(\tau)$. Therefore, under weak stationarity, *mean and variance are constant.*
+
+This is a much weaker assumption but still useful!
+
+### White Noise
+
+White Noise is stationary!
+
+Consider a discrete family of i.i.d. Normal r.v.s (often Gaussian)
+
+$$
+X_t \sim iid N(0, \sigma^2)
+$$
+
+The mean function $\mu(t) = 0$ is obviously constant, so consider
+
+$$
+\gamma(t_1, t_2) =
+\begin{cases}
+0 & t_1 \neq t_2 \\
+\sigma^2 & t_1 = t_2 \\
+\end{cases}
+$$
+
+### Random walks
+
+Random walks are not stationary!
+
+$$
+X_t = X_{t-1} + Z_t = \sum_{i=1}^t{Z_i}
+$$
+
+The mean and variance increase linearly with time:
+
+$$
+E[X_t] = E[\sum_{i=1}^t{Z_i}] = \sum_{i=1}^t{E[Z_i]} = t \times \mu
+$$
+
+$$
+Var[X_t] = Var[\sum_{i=1}^t{Z_i}] = \sum_{i=1}^t{Var[Z_i]} = t \times \sigma^2
+$$
+
+### Moving Average Processes
+
+Moving average processes are (weakly) stationary! The mean is constant (equal to zero) and the autocovariance depends just upon lag spacing.
+
+Start with i.i.d. r.v.s $Z_t \sim iid(0, sigma^2)$.
+
+$MA(q)$ process: $X_t = \beta_0 Z_t + \beta_1 Z_{t-1} + ... + \beta_q Z_{t-q}$
+
+$q$ tells us how far back to look along the white noise sequence for our weighted average.
+
+## Backward Shift Operator
+
+If the limit of a sequence exists, i.e. $\lim_{n \rarr \infty} a_n = a$, it is said to be convergent.
+
+If the partial sums $s_n$ of a sequence, i.e. up to the $n^{th}$ element, is convergent to a number $s$, then the infinite series $\sum_{k=1}^{\infty}{a_k}$ is convergent, and is equal to $s$.
+
+$$
+\sum_{k=1}^{\infty}{a_k} = \lim_{n \rarr \infty}{s_n} = \lim_{n \rarr \infty}{(a_1 + a_2 + \dots + a_n)} = s
+$$
+
+A series is absolutely convergent if $\sum_{k=1}^{\infty}{ \lvert a_k \rvert }$ is convergent. Absolute convergence implies convergence.
+
+Consider a geometric sequence $\{ar^{n-1}\}*{n=1}^{\infty} = \{a, ar, ar^2, ar^3, \dots \}$. A geometric series $\sum*{k=1}^{\infty}{ar^{k-1}}$ converges to $\frac{a}{1-r}$ if $\lvert r \rvert \lt 1$.
+
+Define the backward shift operator $B$ such that
+
+$$
+BX_t = X_{t-1}, B^2X_t = BBX_t = BX_{t-1} = X_{t-2}, B^kX_t = X_{t-k}
+$$
+
+Thus, a random walk can be expressed as:
+
+$$
+X_t = X_{t-1} + Z_t \rArr X_t = BX_t + Z_t \rArr (1-B)X_t = Z_t \rArr \phi(B)X_t = Z_t
+$$
+
+where $\phi(B) = 1 - B$, in this example.
+
+### MA(q)
+
+Then, an $MA(q)$ process with a drift $\mu$:
+
+$$
+\begin{split}
+X_t & = \mu + \beta_0 Z_t + \beta_1 Z_{t-1} + \dots + \beta_q Z_{t-q} \\
+ & = \mu + \beta_0 Z_t + \beta_1 B^1 Z_t + \dots + \beta_q B_q Z_t
+\end{split}
+$$
+
+$$
+X_t - \mu = \beta(B) Z_t
+$$
+
+$$
+\beta(B) = \phi_0 + \phi_1 B + \dots + \phi_q B^q
+$$
+
+### AR(p)
+
+$$
+X_t = \phi_1 X_{t-1} + \phi_2 X_{t-2} + \dots + \phi_p X_{t-p} + Z_t
+$$
+
+$$
+\begin{split}
+Z_t & = X_t - \phi_1 X_{t-1} - \phi_2 X_{t-2} - \dots - \phi_p X_{t-p} \\
+ & = X_t - \phi_1 BX_t - \phi_2 B^2X_t - \dots - \phi_p B^pX_t \\
+ & = \phi(B) X_t
+\end{split}
+$$
+
+where $\phi(B) = 1 - \phi_1 B - \phi_2 B^2 - \dots - \phi_p B^p$
+
+### Invertibility
+
+Consider a stochastic process $\{X_t\}$ with random disturbances or white noise $\{Z_t\}$. $\{X_t\}$ is called invertible if $Z_t = \sum_{k=0}^{\infty}{\pi_k X_{t-k}}$ where $\sum_{k=0}^{\infty}{\lvert \pi_k \rvert}$ is convergent.
+
+Invertibility guarantees a unique MA process corresponding to the observed ACF.
+
+### Duality
+
+### Mean Square Convergence
+
+## Autoregressive Processes
+
+A Moving Average process MA(q) starts with white noise $Z_t \sim iid(0, \sigma^2)$ and takes an average of the last $q$ terms:
+
+$$
+X_t = \theta_0 Z_t + \theta_1 Z_{t-1} + \dots + \theta_q Z_{t-q}
+$$
+
+An Autoregressive Process AR(p), on the other hand, depends on the previous terms in the process:
+
+$$
+X_t = Z_t + \phi_1 X_{t-1} + \dots + \phi_p X_{t-p}
+$$
+
+Changing $\phi$ has a profound effect on the drop off in the ACF.
+
+A Random Walk is an example of an Autoregressive process.
+
+Note that an autoregressive process may not necessarily be stationary! For example, an AR(1) process is only stationary if $-1 < \phi < 1$.
+
+*An AR(p) process can be expressed as an infinite order MA(q) process.*
+
+## Yule-Walker Equations
+
+### Difference Equations
+
+## Partial Autocorrelation and PACF
+
+A PACF plot tells you the likely order of an AR(p) process.
+
+## Yule-Walker Matrix Notation and AR(p) Model Parameter Estimation
+
+## Akaike Information Criterion for Model Quality
+
+- Give *credit* for models which reduce the error sum of squares
+- Build in a *penalty* for models which bring in too many parameters
+
+$$
+AIC = -2 \times \log(\text{maximum likelihood}) + 2 \times (\text{number of parameters in the model})
+$$
+
+Simple AIC of a given model with $p$ terms:
+
+$$
+AIC = \log(\hat{\sigma}^2) + \frac{n + 2 \times p}{n}, \text{ where } \hat{\sigma}^2 = \frac{SSE}{n}
+$$
+
+## ARMA
+
+Bring together an MA(q) and an AR(p):
+
+$$
+X_t = \text{Noise} + \text{Autoregressive Part} + \text{Moving Average Part}
+$$
+
+$$
+X_t = Z_t + \phi_1 X_{t-1} + \dots + \phi_p X_{t-p} + \theta_1 Z_{t-1} + dots + \theta_q Z_{t-q}
+$$
+
+ARMA (mixed process):
+
+$$
+\theta(B) Z_t = \phi(B) X_t
+$$
+
+$$
+Z_t = \frac{\phi(B)}{\theta(B)} X_t
+$$
+
+## ARIMA
+
+## Forecasting with Smoothing Techniques
+
+### Seasonality
+
+### Single Smoothing
+
+### Double Smoothing
+
+### Triple Exponential Smoothing
