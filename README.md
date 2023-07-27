@@ -11,6 +11,13 @@ git lfs track "*.pdf"
 git lfs track "*.zip"
 ```
 
+## Research Papers
+
+- [Papers with Code](https://paperswithcode.com/)
+- [Mendeley Reference Management](https://www.mendeley.com/)
+- [Semantic Scholar Scientific Literature Search](https://www.semanticscholar.org/)
+- [Google Research Blog](https://ai.googleblog.com/)
+
 ## Books
 
 - [Deep Learning](https://www.deeplearningbook.org/)
@@ -20,6 +27,8 @@ git lfs track "*.zip"
 
 ## Resources
 
+- [Aman.AI Summaries](https://aman.ai/)
+- [Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html)
 - [Neural Network Playground](https://playground.tensorflow.org/)
 
 ## Cheat Sheets
