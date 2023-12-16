@@ -7,7 +7,9 @@ pip install git-lfs
 git init
 git lfs install
 
+git lfs track "*.csv"
 git lfs track "*.pdf"
+git lfs track "*.txt"
 git lfs track "*.zip"
 ```
 
@@ -30,6 +32,7 @@ git lfs track "*.zip"
 - [Aman.AI Summaries](https://aman.ai/)
 - [Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html)
 - [Neural Network Playground](https://playground.tensorflow.org/)
+- [Reinforcement Learning](https://lcalem.github.io/blog/2018/09/22/sutton-index)
 
 ## Cheat Sheets
 

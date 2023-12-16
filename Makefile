@@ -21,10 +21,10 @@ define install
 	if ! poetry lock --check 2>/dev/null; then poetry lock --no-update; fi
 
 	if [ -z $(GROUPS) ]; then \
-		poetry install; \
+		poetry install --no-root; \
 	else \
 		printf "\nGROUPS=${GROUPS}\n\n"; \
-		poetry install --sync --with $(GROUPS); \
+		poetry install --no-root --sync --with $(GROUPS); \
 	fi
 
 	poetry run pre-commit install
